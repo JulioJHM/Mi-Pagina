@@ -231,9 +231,34 @@ async function persist(){
     console.error("Error al guardar:", e);
   }
 }
-function loadLocal(){try{var s=JSON.parse(localStorage.getItem('mercadia_v1')||'null');if(s){items=s.items||[];profs=s.profs||{}}}catch(e){}}
-async function save(oid,st){if(db)await db.collection(COL).doc(oid).set(st);applyLocal(oid,st)}
 
+async function loadLocal(){
+  try {
+    if(db) {
+      var docRef = await db.collection(COL).doc('main').get();
+      if(docRef.exists) {
+        var data = docRef.data();
+        profs = data.profs || {};
+        items = data.items || [];
+        render();
+        return;
+      }
+    }
+    var s = JSON.parse(localStorage.getItem('mercadia_v1')) || null;
+    if(s){
+      items = s.items || [];
+      profs = s.profs || {};
+    }
+    render();
+  } catch(e) {
+    console.error("Error al cargar datos:", e);
+  }
+}
+
+async function save(oid, st){
+  if(db) await db.collection(COL).doc(oid).set(st);
+  applyLocal(oid, st);
+}
 /* ---------- vistas ---------- */
 function setView(r,keep){
   role=r;if(r!=='emp')$('okb').hidden=true;
