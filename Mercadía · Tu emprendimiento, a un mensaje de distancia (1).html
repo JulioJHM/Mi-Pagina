@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mercadía · Tu emprendimiento, a un mensaje de distancia</title>
+<style>
+:root{--ink:#fff;--slate:#c9c9d1;--steel:#a0a0aa;--hair:rgba(255,255,255,.16);--link:#ff9a4d;--err:#ffb27a;--nav:rgba(0,0,0,.55);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{background:#000;scroll-padding-top:calc(60px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:transparent;color:var(--ink);font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Inter,Arial,sans-serif;font-size:17px;line-height:1.47;letter-spacing:-.374px;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Inter,Arial,sans-serif;font-weight:600;margin:0}
+button,input,textarea{font:inherit;letter-spacing:inherit;color:inherit}
+:focus-visible{outline:2px solid #ff9a4d;outline-offset:3px}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:#000}
+.bg i{position:absolute;left:0;top:0;border-radius:50%;filter:blur(90px);opacity:.6;will-change:transform}
+.bg .o{width:50vmax;height:50vmax;background:#ff6a00;animation:e1 30s linear infinite}
+.bg .b{width:48vmax;height:48vmax;background:#1f6bff;animation:e2 34s linear infinite}
+.bg .o2{width:30vmax;height:30vmax;background:#ff4d00;opacity:.4;animation:e2 42s linear infinite;animation-delay:-12s}
+.bg .b2{width:30vmax;height:30vmax;background:#2a8cff;opacity:.4;animation:e1 38s linear infinite;animation-delay:-20s}
+@keyframes e1{0%{transform:translate(-25vw,-25vh)}25%{transform:translate(75vw,-25vh)}50%{transform:translate(75vw,75vh)}75%{transform:translate(-25vw,75vh)}100%{transform:translate(-25vw,-25vh)}}
+@keyframes e2{0%{transform:translate(75vw,75vh)}25%{transform:translate(-25vw,75vh)}50%{transform:translate(-25vw,-25vh)}75%{transform:translate(75vw,-25vh)}100%{transform:translate(75vw,75vh)}}
+.bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 62% 56% at 50% 50%,rgba(0,0,0,.92),rgba(0,0,0,.6) 62%,transparent 100%)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--hair)}
+.bar div{max-width:1080px;margin:auto;height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.brand{font:600 19px/1.21 "SF Pro Display",-apple-system,"Helvetica Neue",Inter,Arial,sans-serif;letter-spacing:.228px}
+.bar a{font-size:13px;letter-spacing:-.12px;color:var(--ink);text-decoration:none;margin-left:20px}
+.bar a[aria-current]{font-weight:600}
+.hero{text-align:center;padding:96px 20px 90px}
+.kicker{font:600 21px/1 "SF Pro Display",-apple-system,"Helvetica Neue",Inter,Arial,sans-serif;letter-spacing:.231px;margin-bottom:20px}
+.hero h1{font-size:clamp(40px,9vw,80px);line-height:1.05;letter-spacing:-1.2px;max-width:900px;margin:0 auto}
+.hero p{max-width:560px;margin:24px auto 0;color:var(--slate);font-size:21px;line-height:1.24}
+.hero h1,.hero p{text-shadow:0 2px 28px rgba(0,0,0,.65)}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:40px}
+.cta .pill{padding:20px 46px;font-size:22px}
+.pill{border-radius:9999px;padding:12px 24px;font-size:17px;line-height:1.24;cursor:pointer;border:1px solid transparent;text-decoration:none;display:inline-block;color:#fff;background:none}
+.pill.fill{background:linear-gradient(135deg,#ff9a3d,#ff5a00);color:#111;font-weight:600}
+.pill.line{border-color:var(--steel)}
+.pill:disabled{opacity:.5;cursor:default}
+.pill.glass{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:600;background:linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.05));-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);border:1px solid rgba(255,255,255,.4);text-shadow:0 1px 8px rgba(0,0,0,.4);transition:transform .2s;--g:255,255,255}
+.pill.glass{box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -1px 2px rgba(var(--g),.25),0 0 16px rgba(var(--g),.4),0 10px 30px rgba(0,0,0,.4)}
+.pill.glass:hover{transform:translateY(-2px)}
+.pill.green{--g:52,199,89;background:linear-gradient(135deg,rgba(60,210,100,.6),rgba(20,130,65,.3));border-color:rgba(150,255,180,.6)}
+.pill.blue{--g:60,130,255;background:linear-gradient(135deg,rgba(70,140,255,.6),rgba(25,70,190,.3));border-color:rgba(150,195,255,.65)}
+.pill.orange{--g:255,120,20;background:linear-gradient(135deg,rgba(255,150,50,.6),rgba(200,70,0,.3));border-color:rgba(255,205,160,.65)}
+.band{padding:70px 20px 90px}
+.wrap{max-width:1080px;margin:auto}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.head h2{font-size:40px;line-height:1.05}
+.acts{display:flex;gap:20px;align-items:center}
+.link{color:var(--link);background:none;border:0;padding:0;cursor:pointer}
+.hint{color:var(--slate);font-weight:400}
+.card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-radius:28px;padding:28px}
+form.card{max-width:720px;margin:48px auto 0;padding:40px;width:100%}
+#form h3{font-size:28px;line-height:1.14;margin-bottom:8px}
+.sec{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--steel);margin:28px 0 16px}
+.f{margin-bottom:22px}
+label,.lbl{display:block;font-size:14px;line-height:1.29;font-weight:600;margin-bottom:8px}
+label .hint,.lbl .hint{font-weight:400}
+input[type=text],input[type=tel],textarea{width:100%;border:1px solid rgba(255,255,255,.25);border-radius:14px;background:rgba(0,0,0,.35);padding:12px 16px}
+textarea{min-height:96px;resize:vertical}
+input[type=file]{position:absolute;opacity:0;width:1px;height:1px}
+.pick{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pick .pill{padding:8px 18px;font-size:14px;margin:0;font-weight:400}
+.thumbs{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.thumbs img{width:88px;height:88px;object-fit:cover;border-radius:14px}
+.thumbs img.logo{border-radius:50%}
+.th{position:relative}
+.th button{position:absolute;top:-6px;right:-6px;width:24px;height:24px;border-radius:50%;border:0;background:#fff;color:#000;cursor:pointer;font-size:14px;line-height:1;padding:0}
+.msg{font-size:14px;color:var(--err);min-height:20px;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.item{display:flex;flex-direction:column;padding:0;overflow:hidden;position:relative}
+.main{aspect-ratio:4/3;width:100%;object-fit:cover;display:block;background:rgba(255,255,255,.05)}
+.price{position:absolute;top:14px;right:14px;padding:4px 14px;border-radius:9999px;font-size:14px;font-weight:600;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.35)}
+.strip{display:flex;gap:8px;padding:12px 28px 0}
+.strip button{border:2px solid transparent;border-radius:10px;padding:0;width:52px;height:52px;overflow:hidden;cursor:pointer;background:none}
+.strip button[aria-current=true]{border-color:#fff}
+.strip img{width:100%;height:100%;object-fit:cover;display:block}
+.info{padding:20px 28px 28px}
+.who{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.who img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.08)}
+.who h3{font-size:21px;line-height:1.14}
+.prod{font-size:19px;line-height:1.25;margin-bottom:6px}
+.what{margin:0 0 10px;line-height:1.35}
+.by{font-size:14px;color:var(--slate);margin:0}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.more{margin-top:14px}
+.search{margin-bottom:28px}
+.empty{text-align:center;padding:56px 20px}
+.empty h3{font-size:28px;line-height:1.14;margin-bottom:8px}
+.empty p{color:var(--slate);margin:0}
+.note{font-size:12px;color:var(--slate);text-align:center;margin-top:24px}
+#gate{max-width:560px;margin:0 auto;text-align:center}
+#gate h3{font-size:28px;line-height:1.14;margin-bottom:12px}
+#gate p{margin:0 0 24px}
+#gL{display:flex;flex-direction:column;gap:12px;align-items:center}
+dialog{border:1px solid rgba(255,255,255,.14);border-radius:28px;padding:0;width:calc(100% - 32px);max-width:640px;max-height:90vh;overflow:auto;background:#121214;color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+.order{margin-top:22px;padding-top:20px;border-top:1px solid var(--hair)}
+.qty{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.qty button{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);cursor:pointer;font-size:20px;line-height:1;padding:0}
+.qty b{min-width:24px;text-align:center;font-size:19px}
+.order input,.order textarea{margin-bottom:12px}
+.order textarea{min-height:64px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#fff;color:#000;border-radius:9999px;padding:12px 24px;font-size:14px;z-index:99;max-width:90vw;text-align:center}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bg i{animation:none}.pill.glass:hover{transform:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gpin" x1="0" y1="0" x2="1" y2="1"><stop offset=".45" stop-color="#ea4335"/><stop offset=".45" stop-color="#fbbc04"/><stop offset=".75" stop-color="#fbbc04"/><stop offset=".75" stop-color="#34a853"/></linearGradient></defs></svg>
+<div class="bg" aria-hidden="true"><i class="o"></i><i class="b"></i><i class="o2"></i><i class="b2"></i></div>
+
+<header class="bar"><div><span class="brand"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:-7px;margin-right:8px"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3d"/><stop offset=".5" stop-color="#ff5a00"/><stop offset="1" stop-color="#1f6bff"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg)"/><path d="M14 20a2 2 0 0 1 2-2H48a2 2 0 0 1 2 2V28a6 6 0 0 1-12 0a6 6 0 0 1-12 0a6 6 0 0 1-12 0Z" fill="#fff"/><path d="M20 34H44a4 4 0 0 1 4 4V46a4 4 0 0 1-4 4H30l-8 6V50H20a4 4 0 0 1-4-4V38a4 4 0 0 1 4-4Z" fill="#fff" fill-opacity=".92"/><circle cx="25" cy="42" r="2.2" fill="#ff5a00"/><circle cx="32" cy="42" r="2.2" fill="#ff5a00"/><circle cx="39" cy="42" r="2.2" fill="#ff5a00"/></svg>Mercadía</span><nav><a href="#" data-role="">Inicio</a><a href="#" data-role="cli">Clientes</a><a href="#" data-role="mapa">Ubicaciones</a><a href="#" data-role="emp">Emprendedores</a></nav></div></header>
+
+<section class="hero" id="home">
+  <div class="kicker">Mercadía</div>
+  <h1>Emprendimientos reales, en un solo lugar.</h1>
+  <p>Publica tu producto para que te encuentren, o explora lo que otros emprendedores ya están ofreciendo.</p>
+  <div class="cta">
+    <button class="pill glass orange" data-role="emp">Emprendedores</button>
+    <button class="pill glass blue" data-role="cli">Clientes</button>
+  </div>
+</section>
+
+<section class="band" id="emp" hidden><div class="wrap">
+  <div class="head"><h2 id="regT">Perfil de emprendedor</h2><span class="acts"><button class="link" type="button" id="logout" hidden>Cerrar sesión</button><button class="link" type="button" data-role="" id="backHome">Volver al inicio</button></span></div>
+
+  <div class="card" id="gate" hidden><h3 id="gT"></h3><p class="hint" id="gP"></p><div id="gL"></div></div>
+
+  <div id="dash" hidden>
+    <div class="grid" id="mine"></div>
+    <p class="note" id="mineE"></p>
+    <p style="text-align:center"><button class="link" type="button" id="delAll">Eliminar todo mi catálogo</button></p>
+  </div>
+
+  <form class="card" id="form" novalidate hidden>
+    <h3 id="formT"></h3>
+    <p class="hint" id="formH" style="margin:0">Este formulario es tu inicio de sesión: quedas con tu perfil activo y puedes editar y eliminar tus productos cuando quieras.</p>
+    <div id="fPerfil">
+      <p class="sec">Tu emprendimiento</p>
+      <div class="f"><label for="nombre">Tu nombre</label><input type="text" id="nombre" autocomplete="name" maxlength="80"></div>
+      <div class="f"><label for="empresa">Nombre de la empresa o marca</label><input type="text" id="empresa" maxlength="80"></div>
+      <div class="f"><label for="wa">WhatsApp de contacto <span class="hint">(con código de país)</span></label><input type="tel" id="wa" inputmode="tel" autocomplete="tel" placeholder="+57 300 123 4567" maxlength="24"></div>
+      <div class="f"><label for="ubi">¿Dónde está tu emprendimiento? <span class="hint">(ciudad y zona o dirección)</span></label><input type="text" id="ubi" maxlength="120" placeholder="Ej. Cali, barrio San Fernando"></div>
+      <div class="f"><span class="lbl">Logo o marca</span>
+        <div class="pick"><label class="pill line" for="logo">Elegir logo</label><input type="file" id="logo" accept="image/*"><span class="hint" id="logoN">Ningún archivo</span></div>
+        <div class="thumbs" id="logoP"></div></div>
+    </div>
+    <p class="sec">Producto</p>
+    <div class="f"><label for="producto">Nombre del producto</label><input type="text" id="producto" maxlength="80"></div>
+    <div class="f"><label for="precio">Precio <span class="hint">(como lo quieres mostrar)</span></label><input type="text" id="precio" maxlength="24" placeholder="Ej. $15 o 15 USD"></div>
+    <div class="f"><label for="emp2">¿Qué emprendimiento es? <span class="hint">(describe qué vendes)</span></label><textarea id="emp2" maxlength="400"></textarea></div>
+    <div class="f"><span class="lbl">Imágenes del producto <span class="hint">(mínimo 3, máximo 6)</span></span>
+      <div class="pick"><label class="pill line" for="imgs">Añadir imágenes</label><input type="file" id="imgs" accept="image/*" multiple><span class="hint" id="imgsN">0 de 6 (mínimo 3)</span></div>
+      <div class="thumbs" id="imgsP"></div></div>
+    <p class="msg" id="msg" role="alert"></p>
+    <button class="pill fill" id="enviar" type="submit">Publicar</button><button class="pill line" id="cancelEdit" type="button" hidden style="margin-left:12px">Cancelar</button>
+  </form>
+</div></section>
+
+<section class="band" id="mapa" hidden><div class="wrap">
+  <div class="head"><h2>Dónde están</h2><button class="link" type="button" data-role="cli">Volver al catálogo</button></div>
+  <div id="places"></div>
+</div></section>
+
+<section class="band" id="catalogo" hidden><div class="wrap">
+  <div class="head"><h2>Catálogo</h2><span class="hint" id="count"></span><button class="pill glass blue" type="button" data-role="mapa">Ver dónde están</button><button class="link" type="button" data-role="">Volver al inicio</button></div>
+  <input type="text" class="search" id="q" placeholder="Buscar por producto, empresa o lugar" aria-label="Buscar en el catálogo">
+  <div class="grid" id="grid"></div>
+  <div class="card empty" id="empty" hidden><h3>Aún no hay emprendimientos.</h3><p>Vuelve pronto: los emprendedores están publicando sus productos.</p></div>
+  <div class="card empty" id="nores" hidden><h3>Sin resultados.</h3><p>Prueba con otra palabra.</p></div>
+  <p class="note" id="note" hidden>Vista previa: los registros solo se ven en esta pantalla. Al abrir la página publicada se comparten con todos.</p>
+</div></section>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
+var db=null,assets=null,items=[],profs={},uid=null,creating=false,editing=null,logoF=null,imgF=[],busy=false,locked=false,curNeg=null,role='',query='';
+var COL='emprendimientos',WA='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C7 3 3 6.6 3 11c0 1.9.8 3.6 2 5l-1 4 4.2-1.2c1.2.5 2.5.7 3.8.7 5 0 9-3.6 9-8s-4-8-9-8z" fill="currentColor"/></svg>';
+var PIN='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z" fill="url(#gpin)"/><circle cx="12" cy="9" r="2.8" fill="#fff"/></svg>';
+function ls(a,k,v){try{if(a==='g')return localStorage.getItem(k);if(a==='s')localStorage.setItem(k,v);else localStorage.removeItem(k)}catch(e){}return null}
+function K(n){return 'vit_'+n+'_'+uid}
+function toast(t){var d=el('div','toast',t);document.body.appendChild(d);setTimeout(function(){d.remove()},3400)}
+function wait(){return new Promise(function(r){setTimeout(r,60)})}
+
+/* ---------- sesión y perfiles ---------- */
+function negs(){return Object.keys(profs).filter(function(k){return uid&&(profs[k].owner===uid||profs[k].uid===uid)})}
+function docId(){var n=negs();return n.length?profs[n[0]].owner:uid}
+function resolve(){var ns=negs(),out=ls('g',K('out'))==='1',s=ls('g',K('neg'));curNeg=null;if(out||!ns.length)return;curNeg=(s&&ns.indexOf(s)>-1)?s:(ns.length===1?ns[0]:null)}
+function strip(o){var r={};for(var k in o)if(k!=='owner')r[k]=o[k];return r}
+function docState(oid){var p={};Object.keys(profs).forEach(function(k){if(profs[k].owner===oid)p[k]=strip(profs[k])});return{perfiles:p,items:items.filter(function(i){return i.owner===oid}).map(strip)}}
+function applyLocal(oid,st){
+  items=items.filter(function(i){return i.owner!==oid}).concat(st.items.map(function(i){return Object.assign({},i,{owner:oid})}));
+  Object.keys(profs).forEach(function(k){if(profs[k].owner===oid)delete profs[k]});
+  Object.keys(st.perfiles).forEach(function(k){profs[k]=Object.assign({},st.perfiles[k],{owner:oid})});
+  items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
+}
+async function save(oid,st){if(db)await db.collection(COL).doc(oid).set(st);applyLocal(oid,st)}
+
+/* ---------- vistas ---------- */
+function setView(r,keep){
+  if(locked)r='emp';role=r;
+  $('home').hidden=r!=='';$('emp').hidden=r!=='emp';$('catalogo').hidden=r!=='cli';$('mapa').hidden=r!=='mapa';
+  document.querySelectorAll('.bar a').forEach(function(a){var t=a.getAttribute('data-role'),s=false;
+    if(locked)s=t==='emp';else if(r==='emp')s=t===''||t==='emp';else if(r==='cli'||r==='mapa')s=t===''||t==='cli'||t==='mapa';
+    if(t==='emp')a.textContent=locked?'Mi perfil':'Emprendedores';
+    a.hidden=!s;if(s&&t===r&&r!=='')a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  $('backHome').hidden=locked;
+  if(!keep)window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-role]').forEach(function(e){e.addEventListener('click',function(ev){ev.preventDefault();setView(e.getAttribute('data-role'))})});
+
+function sync(){
+  resolve();var ns=negs(),was=locked;locked=!!curNeg;
+  var newMode=!!uid&&(creating||!ns.length),chooser=!!uid&&!curNeg&&!newMode;
+  $('gate').hidden=!(!uid||chooser);$('dash').hidden=!curNeg;$('form').hidden=!(newMode||!!curNeg);$('logout').hidden=!curNeg;
+  $('fPerfil').hidden=!(newMode||!!editing);$('formH').hidden=!(newMode&&!ns.length);
+  $('formT').textContent=newMode?(ns.length?'Nuevo emprendimiento':'Crea tu cuenta de emprendedor'):(editing?'Editar producto':'Agregar otro producto');
+  $('enviar').textContent=editing?'Guardar cambios':(newMode?(ns.length?'Crear y publicar':'Crear cuenta y publicar'):'Publicar producto');
+  $('cancelEdit').hidden=!(editing||(newMode&&ns.length>0));
+  $('regT').textContent=curNeg?profs[curNeg].empresa:'Perfil de emprendedor';
+  var gl=$('gL');gl.innerHTML='';
+  if(!uid){$('gT').textContent='Inicia sesión para continuar';$('gP').textContent='Para publicar y administrar tu catálogo necesitas haber iniciado sesión en tu cuenta de Claude.'}
+  else if(chooser){
+    $('gT').textContent='Elige tu emprendimiento';$('gP').textContent='Entra a uno de tus emprendimientos o crea uno nuevo.';
+    ns.forEach(function(k){var b=el('button','pill glass orange','Entrar a '+profs[k].empresa);b.type='button';b.onclick=function(){ls('s',K('neg'),k);ls('d',K('out'));sync()};gl.appendChild(b)});
+    var nb=el('button','pill glass blue','Crear nuevo emprendimiento');nb.type='button';nb.onclick=function(){creating=true;resetForm();sync()};gl.appendChild(nb);
+  }
+  if(locked&&role!=='emp')setView('emp');else setView(role,true);
+  if(locked&&!was&&role==='emp')window.scrollTo(0,0);
+}
+$('logout').onclick=function(){ls('s',K('out'),'1');editing=null;creating=false;resetForm();sync()};
+
+/* ---------- imágenes ---------- */
+function toData(f){return new Promise(function(res,rej){var r=new FileReader();r.onerror=rej;r.onload=function(){res(r.result)};r.readAsDataURL(f)})}
+async function up(f){if(assets){var r=await assets.upload(f);return r.url||('/_blob/'+r.id)}return toData(f)}
+async function shrink(f,max){
+  if(f.size>40e6)throw new Error('big');
+  var bmp;try{bmp=await createImageBitmap(f,{resizeWidth:max,resizeQuality:'medium',imageOrientation:'from-image'})}catch(e){bmp=await createImageBitmap(f)}
+  var s=Math.min(1,max/Math.max(bmp.width,bmp.height)),w=Math.max(1,Math.round(bmp.width*s)),h=Math.max(1,Math.round(bmp.height*s));
+  var c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(bmp,0,0,w,h);if(bmp.close)bmp.close();
+  return new Promise(function(res,rej){c.toBlob(function(b){b?res(b):rej(new Error('blob'))},'image/jpeg',.8)});
+}
+function pv(box,blobs,round){(box._u||[]).forEach(function(u){URL.revokeObjectURL(u)});box._u=[];box.innerHTML='';blobs.forEach(function(b){var u=URL.createObjectURL(b);box._u.push(u);var im=document.createElement('img');im.src=u;im.alt='';if(round)im.className='logo';box.appendChild(im)})}
+function drawImgs(){var box=$('imgsP');(box._u||[]).forEach(function(u){URL.revokeObjectURL(u)});box._u=[];box.innerHTML='';
+  imgF.forEach(function(b,i){var u=URL.createObjectURL(b);box._u.push(u);var w=el('div','th'),im=el('img');im.src=u;im.alt='Imagen '+(i+1);var x=el('button','','×');x.type='button';x.setAttribute('aria-label','Quitar imagen '+(i+1));x.onclick=function(){if(busy)return;imgF.splice(i,1);drawImgs();cnt()};w.appendChild(im);w.appendChild(x);box.appendChild(w)})}
+function cnt(extra){$('imgsN').textContent=imgF.length+' de 6'+(imgF.length<3?' (mínimo 3)':'')+(extra||'')}
+$('logo').onchange=async function(e){var f=e.target.files[0];e.target.value='';if(!f)return;busy=true;$('logoN').textContent='Procesando…';
+  try{logoF=await shrink(f,400);$('logoN').textContent=f.name;pv($('logoP'),[logoF],true)}catch(err){logoF=null;pv($('logoP'),[],true);$('logoN').textContent='No se pudo leer esa imagen. Prueba con otra.'}
+  busy=false};
+$('imgs').onchange=async function(e){if(busy)return;var all=Array.prototype.slice.call(e.target.files);e.target.value='';if(!all.length)return;
+  var fs=all.slice(0,6-imgF.length),over=all.length-fs.length,bad=0;
+  if(!fs.length){cnt(' · ya tienes el máximo, quita una para añadir otra');return}
+  busy=true;
+  for(var i=0;i<fs.length;i++){$('imgsN').textContent='Procesando '+(i+1)+' de '+fs.length+'…';try{imgF.push(await shrink(fs[i],1000));drawImgs()}catch(err){bad++}await wait()}
+  cnt((bad?' · '+bad+' no se pudieron leer':'')+(over>0?' · se ignoraron '+over+' por el máximo de 6':''));busy=false};
+function resetForm(){$('form').reset();logoF=null;imgF=[];drawImgs();$('logoP').innerHTML='';$('logoN').textContent='Ningún archivo';cnt();$('msg').textContent=''}
+
+/* ---------- publicar / editar / borrar ---------- */
+$('form').onsubmit=async function(e){
+  e.preventDefault();var m=$('msg');m.textContent='';
+  if(busy)return m.textContent='Espera a que terminen de procesarse las imágenes.';
+  if(!uid)return m.textContent='Necesitas iniciar sesión en Claude para publicar.';
+  var ns=negs(),newMode=creating||!ns.length,showP=newMode||!!editing,negId=newMode?'n'+Date.now():(editing?editing.neg:curNeg),old=profs[negId]||null,P;
+  if(showP){
+    P={nombre:$('nombre').value.trim(),empresa:$('empresa').value.trim(),wa:$('wa').value.replace(/\D/g,''),ubi:$('ubi').value.trim(),uid:uid,logo:old?old.logo:''};
+    if(!P.nombre)return m.textContent='Escribe tu nombre.';
+    if(!P.empresa)return m.textContent='Escribe el nombre de tu empresa o marca.';
+    if(P.wa.length<8||P.wa.length>15)return m.textContent='Escribe tu WhatsApp con código de país, por ejemplo +57 300 123 4567.';
+    if(!P.ubi)return m.textContent='Indica dónde está tu emprendimiento.';
+    if(!logoF&&!P.logo)return m.textContent='Sube el logo o la marca de tu emprendimiento.';
+  }else P=strip(old);
+  var v={producto:$('producto').value.trim(),precio:$('precio').value.trim(),emprendimiento:$('emp2').value.trim()};
+  if(!v.producto)return m.textContent='Escribe el nombre del producto.';
+  if(!v.precio)return m.textContent='Indica el precio del producto.';
+  if(!v.emprendimiento)return m.textContent='Cuéntanos qué emprendimiento es.';
+  if(imgF.length<3&&!(editing&&imgF.length===0))return m.textContent='Sube al menos 3 imágenes del producto. Tienes '+imgF.length+'.';
+  var b=$('enviar');b.disabled=true;b.textContent='Publicando…';
+  try{
+    if(logoF)P.logo=await up(logoF);
+    var imgs=[];for(var i=0;i<imgF.length;i++)imgs.push(await up(imgF[i]));
+    if(editing&&!imgs.length)imgs=editing.imgs;
+    var oid=docId(),st=docState(oid),wasEdit=!!editing;
+    st.perfiles[negId]=P;
+    st.items.forEach(function(it){if(it.neg===negId)Object.assign(it,P)});
+    var it2=Object.assign({id:editing?editing.id:'p'+Date.now(),neg:negId,createdAt:editing?editing.createdAt:Date.now(),imgs:imgs},v,P);
+    if(editing)st.items=st.items.map(function(x){return x.id===editing.id?it2:x});else st.items.push(it2);
+    await save(oid,st);
+    if(newMode){ls('s',K('neg'),negId);ls('d',K('out'))}
+    creating=false;editing=null;resetForm();sync();toast(wasEdit?'Cambios guardados':'Publicado en el catálogo');
+    if(!$('dash').hidden)$('dash').scrollIntoView();
+  }catch(err){m.textContent='No se pudo publicar. Revisa tu conexión e inténtalo de nuevo.'}
+  b.disabled=false;sync();
+};
+$('cancelEdit').onclick=function(){editing=null;creating=false;resetForm();sync()};
+function startEdit(it){
+  editing=it;creating=false;resetForm();
+  $('nombre').value=it.nombre||'';$('empresa').value=it.empresa||'';$('wa').value=it.wa||'';$('ubi').value=it.ubi||'';
+  $('producto').value=it.producto||'';$('precio').value=it.precio||'';$('emp2').value=it.emprendimiento||'';
+  $('logoN').textContent='Se mantiene tu logo actual';$('imgsN').textContent='Se mantienen las imágenes actuales. Añade nuevas (mínimo 3) para reemplazarlas.';
+  sync();$('form').scrollIntoView();
+}
+async function removeItem(it){
+  try{var st=docState(it.owner);st.items=st.items.filter(function(i){return i.id!==it.id});await save(it.owner,st);toast('Producto eliminado')}
+  catch(e){toast('No se pudo eliminar. Inténtalo de nuevo.');renderMine()}
+}
+$('delAll').onclick=function(){var d=$('delAll');
+  if(d.dataset.c){delete d.dataset.c;(async function(){try{var oid=docId(),st=docState(oid);st.items=st.items.filter(function(i){return i.neg!==curNeg});await save(oid,st);toast('Catálogo eliminado')}catch(e){toast('No se pudo eliminar.')}})();return}
+  d.dataset.c='1';d.textContent='Toca de nuevo para confirmar: se borra todo';
+  setTimeout(function(){if(d.dataset.c){delete d.dataset.c;d.textContent='Eliminar todo mi catálogo'}},5000)};
+
+/* ---------- tarjetas ---------- */
+function gallery(imgs,main){var st=el('div','strip');
+  imgs.forEach(function(u,i){var b=el('button');b.type='button';b.setAttribute('aria-label','Ver imagen '+(i+1));if(i===0)b.setAttribute('aria-current','true');var t=el('img');t.src=u;t.alt='';b.appendChild(t);b.onclick=function(){main.src=u;st.querySelectorAll('button').forEach(function(x){x.removeAttribute('aria-current')});b.setAttribute('aria-current','true')};st.appendChild(b)});return st}
+function card(it,mine){
+  var c=el('article','card item'),imgs=it.imgs||[],main=el('img','main');main.src=imgs[0]||'';main.alt=it.producto||('Producto de '+it.empresa);c.appendChild(main);
+  if(it.precio)c.appendChild(el('span','price',it.precio));
+  c.appendChild(gallery(imgs,main));
+  var info=el('div','info'),who=el('div','who'),lg=el('img');lg.src=it.logo||'';lg.alt='Logo de '+it.empresa;who.appendChild(lg);who.appendChild(el('h3',null,it.empresa));info.appendChild(who);
+  info.appendChild(el('h4','prod',it.producto||''));info.appendChild(el('p','what',it.emprendimiento));
+  if(it.ubi)info.appendChild(el('p','by','En '+it.ubi));
+  if(mine){
+    var row=el('div','row'),ed=el('button','pill line','Editar'),del=el('button','pill line','Eliminar');ed.type='button';del.type='button';
+    ed.onclick=function(){startEdit(it)};
+    del.onclick=function(){row.innerHTML='';var ok=el('button','pill fill','Sí, eliminar'),no=el('button','pill line','Cancelar');ok.type='button';no.type='button';no.onclick=renderMine;ok.onclick=function(){ok.disabled=true;removeItem(it)};row.appendChild(ok);row.appendChild(no)};
+    row.appendChild(ed);row.appendChild(del);info.appendChild(row);
+  }else{
+    main.style.cursor='pointer';main.onclick=function(){openDetail(it)};
+    var more=el('button','pill glass green more','Ver detalles y pedir');more.type='button';more.onclick=function(){openDetail(it)};more.style.marginTop='14px';info.appendChild(more);
+  }
+  c.appendChild(info);return c;
+}
+function openDetail(it){
+  var d=$('dlg');if(!d){d=el('dialog');d.id='dlg';document.body.appendChild(d);d.addEventListener('click',function(e){if(e.target===d)d.close()})}
+  d.innerHTML='';var imgs=it.imgs||[],main=el('img','main');main.src=imgs[0]||'';main.alt=it.producto||it.empresa;d.appendChild(main);
+  if(it.precio)d.appendChild(el('span','price',it.precio));
+  d.appendChild(gallery(imgs,main));
+  var info=el('div','info'),who=el('div','who'),lg=el('img');lg.src=it.logo||'';lg.alt='';who.appendChild(lg);who.appendChild(el('h3',null,it.empresa));info.appendChild(who);
+  info.appendChild(el('h4','prod',it.producto||''));info.appendChild(el('p','what',it.emprendimiento));info.appendChild(el('p','by','Emprendedor: '+it.nombre));
+  if(it.ubi){var loc=el('div','row');loc.style.marginTop='14px';var m=el('a','pill glass blue');m.innerHTML=PIN+'<span>'+'Ver ubicación</span>';m.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(it.ubi);m.target='_blank';m.rel='noopener noreferrer';loc.appendChild(m);info.appendChild(loc);info.appendChild(el('p','by','En '+it.ubi)).style.marginTop='8px'}
+  var ord=el('div','order'),qty=1,qv=el('b',null,'1'),qr=el('div','qty'),mn=el('button',null,'−'),pl=el('button',null,'+');mn.type='button';pl.type='button';mn.setAttribute('aria-label','Menos');pl.setAttribute('aria-label','Más');
+  mn.onclick=function(){if(qty>1){qty--;qv.textContent=qty}};pl.onclick=function(){if(qty<99){qty++;qv.textContent=qty}};
+  qr.appendChild(el('span',null,'Cantidad'));qr.appendChild(mn);qr.appendChild(qv);qr.appendChild(pl);ord.appendChild(qr);
+  var nm=el('input');nm.type='text';nm.placeholder='Tu nombre';nm.maxLength=60;nm.setAttribute('aria-label','Tu nombre');ord.appendChild(nm);
+  var nt=el('textarea');nt.placeholder='Nota o dirección de entrega (opcional)';nt.maxLength=200;nt.setAttribute('aria-label','Nota para el emprendedor');ord.appendChild(nt);
+  var row=el('div','row');row.style.marginTop='4px';
+  var a=el('a','pill glass green');a.innerHTML=WA+'<span>Pedir por WhatsApp</span>';a.target='_blank';a.rel='noopener noreferrer';
+  function build(){var t='Hola '+it.nombre+', vi tu producto en Mercadía y quiero hacer un pedido:\n• '+qty+' × '+it.producto+(it.precio?' ('+it.precio+' c/u)':'')+' · '+it.empresa;
+    if(nm.value.trim())t+='\nMi nombre: '+nm.value.trim();if(nt.value.trim())t+='\nNota: '+nt.value.trim();t+='\n¿Cómo coordinamos el pago y la entrega?';
+    return 'https://wa.me/'+encodeURIComponent(it.wa)+'?text='+encodeURIComponent(t)}
+  a.href=build();a.addEventListener('click',function(){a.href=build();toast('Abriendo WhatsApp con tu pedido…')});
+  var x=el('button','pill line','Cerrar');x.type='button';x.onclick=function(){d.close()};
+  row.appendChild(a);row.appendChild(x);ord.appendChild(row);info.appendChild(ord);d.appendChild(info);d.showModal();
+}
+
+/* ---------- listados ---------- */
+function renderCatalog(){
+  var g=$('grid'),q=query.trim().toLowerCase();g.innerHTML='';
+  var list=items.filter(function(i){return !q||[i.empresa,i.producto,i.emprendimiento,i.ubi].join(' ').toLowerCase().indexOf(q)>-1});
+  $('empty').hidden=items.length>0;$('nores').hidden=!(items.length&&!list.length);
+  $('count').textContent=items.length?list.length+(list.length===1?' producto':' productos'):'';
+  list.forEach(function(it){g.appendChild(card(it,false))});
+}
+function renderMine(){
+  var g=$('mine');g.innerHTML='';if(!curNeg)return;
+  var mine=items.filter(function(i){return i.neg===curNeg});
+  mine.forEach(function(it){g.appendChild(card(it,true))});
+  $('mineE').textContent=mine.length?'':'Todavía no has publicado productos en este emprendimiento.';
+  $('delAll').hidden=!mine.length;
+}
+function renderPlaces(){
+  var p=$('places');p.innerHTML='';
+  if(!items.length){p.appendChild(el('p','hint','Aún no hay emprendimientos.'));return}
+  var g=el('div','grid'),seen={};
+  items.slice().sort(function(a,b){return (a.ubi||'~').localeCompare(b.ubi||'~')}).forEach(function(it){
+    var k=it.neg||it.id;if(seen[k])return;seen[k]=1;
+    var c=el('article','card'),who=el('div','who'),lg=el('img');lg.src=it.logo||'';lg.alt='';who.appendChild(lg);who.appendChild(el('h3',null,it.empresa));c.appendChild(who);
+    c.appendChild(el('p','what',it.ubi||'Ubicación no indicada'));
+    var row=el('div','row');
+    if(it.ubi){var a=el('a','pill glass blue');a.innerHTML=PIN+'<span>Ver en Google Maps</span>';a.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(it.ubi);a.target='_blank';a.rel='noopener noreferrer';row.appendChild(a)}
+    if(it.wa){var w=el('a','pill glass green');w.innerHTML=WA+'<span>WhatsApp</span>';w.href='https://wa.me/'+encodeURIComponent(it.wa);w.target='_blank';w.rel='noopener noreferrer';row.appendChild(w)}
+    c.appendChild(row);g.appendChild(c)});
+  p.appendChild(g);
+}
+function render(){renderCatalog();renderMine();renderPlaces();sync()}
+$('q').oninput=function(e){query=e.target.value;renderCatalog()};
+
+/* ---------- inicio ---------- */
+(async function(){
+  try{if(window.claude&&claude.use){db=await claude.use('db');assets=await claude.use('assets');var us=await claude.use('user');if(us){try{uid=await us.id()}catch(e){}}}}catch(e){}
+  if(!db)uid='local';
+  setView({emprendedores:'emp',clientes:'cli',ubicaciones:'mapa'}[location.hash.replace('#','')]||'');
+  if(db){
+    db.collection(COL).onSnapshot(function(s){
+      items=[];profs={};
+      (s.docs||[]).forEach(function(d){var x=typeof d.data==='function'?d.data():d.data;if(!x)return;var pf=x.perfiles||{};
+        Object.keys(pf).forEach(function(k){profs[k]=Object.assign({},pf[k],{owner:d.id})});
+        (x.items||[]).forEach(function(it){it.owner=d.id;items.push(it)})});
+      items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
+    },function(){$('note').hidden=false});
+  }else $('note').hidden=false;
+  render();
+})();
+})();
+</script>
+</body>
+</html>
