@@ -200,7 +200,7 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 (function(){
 var $=function(i){return document.getElementById(i)};
 function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
-var db=null,assets=null,items=[],profs={},uid=null,creating=false,editing=null,logoF=null,imgF=[],busy=false,locked=false,curNeg=null,role='',query='',lastId=null;
+var assets=null,items=[],profs={},uid='web_user',creating=false,editing=null,logoF=null,imgF=[],busy=false,locked=false,curNeg=null,role='',query='',lastId=null;
 var COL='emprendimientos',WA='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C7 3 3 6.6 3 11c0 1.9.8 3.6 2 5l-1 4 4.2-1.2c1.2.5 2.5.7 3.8.7 5 0 9-3.6 9-8s-4-8-9-8z" fill="currentColor"/></svg>';
 var PIN='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z" fill="url(#gpin)"/><circle cx="12" cy="9" r="2.8" fill="#fff"/></svg>';
 function ls(a,k,v){try{if(a==='g')return localStorage.getItem(k);if(a==='s')localStorage.setItem(k,v);else localStorage.removeItem(k)}catch(e){}return null}
@@ -282,7 +282,7 @@ function sync(){
   $('cancelEdit').hidden=!(editing||(newMode&&ns.length>0));
   $('regT').textContent=curNeg?profs[curNeg].empresa:'Perfil de emprendedor';
   var gl=$('gL');gl.innerHTML='';
-  if(!uid){$('gT').textContent='Inicia sesión para continuar';$('gP').textContent='Para publicar y administrar tu catálogo necesitas haber iniciado sesión en tu cuenta de Claude.'}
+  if(!uid){$('gT').textContent='Inicia sesión para continuar';$('gP').textContent='Para publicar y administrar tu catálogo necesitas haber iniciado sesión.'}
   else if(chooser){
     $('gT').textContent='Elige tu emprendimiento';$('gP').textContent='Entra a uno de tus emprendimientos o crea uno nuevo.';
     ns.forEach(function(k){var b=el('button','pill glass orange','Entrar a '+profs[k].empresa);b.type='button';b.onclick=function(){ls('s',K('neg'),k);ls('d',K('out'));sync()};gl.appendChild(b)});
@@ -322,7 +322,7 @@ function resetForm(){$('form').reset();logoF=null;imgF=[];drawImgs();$('logoP').
 $('form').onsubmit=async function(e){
   e.preventDefault();var m=$('msg');m.textContent='';toast('Revisando tu formulario…');
   while(busy)await wait();
-  if(!uid)return m.textContent='Necesitas iniciar sesión en Claude para publicar.';
+  if(!uid)return m.textContent='Necesitas iniciar sesión para publicar.';
   var ns=negs(),newMode=creating||!ns.length,showP=newMode||!!editing,negId=newMode?'n'+Date.now():(editing?editing.neg:curNeg),old=profs[negId]||null,P;
   if(showP){
     P={nombre:$('nombre').value.trim(),empresa:$('empresa').value.trim(),wa:$('wa').value.replace(/\D/g,''),ubi:$('ubi').value.trim(),uid:uid,logo:old?old.logo:''};
@@ -455,18 +455,24 @@ new MutationObserver(function(){if($('msg').textContent)$('msg').scrollIntoView(
 
 /* ---------- inicio ---------- */
 (async function(){
-  try{if(window.claude&&claude.use){db=await claude.use('db');assets=await claude.use('assets');var us=await claude.use('user');if(us){try{uid=await us.id()}catch(e){}}}}catch(e){}
-  if(!db)uid='local';
   setView({emprendedores:'emp',clientes:'cli',ubicaciones:'mapa'}[location.hash.replace('#','')]||'');
+  
   if(db){
+    // Escuchar Firestore en tiempo real para todos los dispositivos
     db.collection(COL).onSnapshot(function(s){
       items=[];profs={};
       (s.docs||[]).forEach(function(d){var x=typeof d.data==='function'?d.data():d.data;if(!x)return;var pf=x.perfiles||{};
         Object.keys(pf).forEach(function(k){profs[k]=Object.assign({},pf[k],{owner:d.id})});
         (x.items||[]).forEach(function(it){it.owner=d.id;items.push(it)})});
       items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
-    },function(){$('note').hidden=false});
-  }else{$('note').hidden=false;loadLocal();window.addEventListener('storage',function(e){if(e.key==='mercadia_v1'){loadLocal();render()}})}
+    },function(err){
+      console.error("Error en Firestore:", err);
+      $('note').hidden=false;
+    });
+  } else {
+    $('note').hidden=false;
+    loadLocal();
+  }
   render();
 })();
 })();
