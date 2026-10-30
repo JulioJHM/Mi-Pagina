@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mercadía · Tu emprendimiento, a un mensaje de distancia</title>
   <!-- Firebase App (Core) y Firestore -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -20,10 +23,9 @@
   // Inicializar Firebase y conectar la variable 'db' que usa tu código
   firebase.initializeApp(firebaseConfig);
   var db = firebase.firestore();
+  // Caché local: al recargar la página (sobre todo en el móvil) el catálogo aparece al instante
+  window.dbReady = db.enablePersistence({synchronizeTabs:true}).catch(function(){});
 </script>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mercadía · Tu emprendimiento, a un mensaje de distancia</title>
 <style>
 :root{--ink:#fff;--slate:#c9c9d1;--steel:#a0a0aa;--hair:rgba(255,255,255,.16);--link:#ff9a4d;--err:#ffb27a;--nav:rgba(0,0,0,.55);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{background:#000;scroll-padding-top:calc(60px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
@@ -200,7 +202,7 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 (function(){
 var $=function(i){return document.getElementById(i)};
 function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
-var assets=null,items=[],profs={},uid='web_user',creating=false,editing=null,logoF=null,imgF=[],busy=false,locked=false,curNeg=null,role='',query='',lastId=null;
+var assets=null,items=[],profs={},uid=(function(){try{var u=localStorage.getItem('mercadia_uid');if(!u){u='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem('mercadia_uid',u)}return u}catch(e){return 'web_user'}})(),creating=false,editing=null,logoF=null,imgF=[],busy=false,locked=false,curNeg=null,role='',query='',lastId=null;
 var COL='emprendimientos',WA='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C7 3 3 6.6 3 11c0 1.9.8 3.6 2 5l-1 4 4.2-1.2c1.2.5 2.5.7 3.8.7 5 0 9-3.6 9-8s-4-8-9-8z" fill="currentColor"/></svg>';
 var PIN='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z" fill="url(#gpin)"/><circle cx="12" cy="9" r="2.8" fill="#fff"/></svg>';
 function ls(a,k,v){try{if(a==='g')return localStorage.getItem(k);if(a==='s')localStorage.setItem(k,v);else localStorage.removeItem(k)}catch(e){}return null}
@@ -209,55 +211,29 @@ function toast(t){var d=el('div','toast',t);document.body.appendChild(d);setTime
 function wait(){return new Promise(function(r){setTimeout(r,60)})}
 
 /* ---------- sesión y perfiles ---------- */
-function negs(){return Object.keys(profs).filter(function(k){return uid&&(profs[k].owner===uid||profs[k].uid===uid)})}
-function docId(){var n=negs();return n.length?profs[n[0]].owner:uid}
+function negs(){return Object.keys(profs).filter(function(k){return uid&&profs[k].uid===uid})}
 function resolve(){var ns=negs(),out=ls('g',K('out'))==='1',s=ls('g',K('neg'));curNeg=null;if(out||!ns.length)return;curNeg=(s&&ns.indexOf(s)>-1)?s:(ns.length===1?ns[0]:null)}
 function strip(o){var r={};for(var k in o)if(k!=='owner')r[k]=o[k];return r}
-function docState(oid){var p={};Object.keys(profs).forEach(function(k){if(profs[k].owner===oid)p[k]=strip(profs[k])});return{perfiles:p,items:items.filter(function(i){return i.owner===oid}).map(strip)}}
-function applyLocal(oid,st){
-  items=items.filter(function(i){return i.owner!==oid}).concat(st.items.map(function(i){return Object.assign({},i,{owner:oid})}));
-  Object.keys(profs).forEach(function(k){if(profs[k].owner===oid)delete profs[k]});
-  Object.keys(st.perfiles).forEach(function(k){profs[k]=Object.assign({},st.perfiles[k],{owner:oid})});
-  items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});persist();render();
-}
-async function persist(){
-  try {
-    const data = { profs: profs, items: items };
-    localStorage.setItem('mercadia_v1', JSON.stringify(data));
-    if(db){
-      await db.collection(COL).doc('main').set(data);
-    }
-  } catch (e) {
-    console.error("Error al guardar:", e);
-  }
-}
 
-async function loadLocal(){
-  try {
-    if(db) {
-      var docRef = await db.collection(COL).doc('main').get();
-      if(docRef.exists) {
-        var data = docRef.data();
-        profs = data.profs || {};
-        items = data.items || [];
-        render();
-        return;
-      }
-    }
-    var s = JSON.parse(localStorage.getItem('mercadia_v1')) || null;
-    if(s){
-      items = s.items || [];
-      profs = s.profs || {};
-    }
-    render();
-  } catch(e) {
-    console.error("Error al cargar datos:", e);
-  }
+/* ---------- datos (Firestore: un documento por emprendimiento y uno por producto) ---------- */
+var NEGS={},PRODS={};
+function rebuild(){
+  profs={};Object.keys(NEGS).forEach(function(k){profs[k]=NEGS[k]});
+  items=Object.keys(PRODS).filter(function(id){return NEGS[PRODS[id].neg]}).map(function(id){var p=PRODS[id];return Object.assign({},p,NEGS[p.neg],{id:p.id,neg:p.neg,createdAt:p.createdAt,imgs:p.imgs})});
+  items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});
 }
-
-async function save(oid, st){
-  if(db) await db.collection(COL).doc(oid).set(st);
-  applyLocal(oid, st);
+function prodData(it){return{type:'prod',id:it.id,neg:it.neg,uid:it.uid,createdAt:it.createdAt,imgs:it.imgs,producto:it.producto,precio:it.precio,emprendimiento:it.emprendimiento}}
+function negData(P){return{type:'neg',nombre:P.nombre,empresa:P.empresa,wa:P.wa,ubi:P.ubi,uid:P.uid,logo:P.logo}}
+function limit(p,ms){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej(new Error('la conexión tardó demasiado'))},ms)})])}
+async function saveAll(negId,P,it){
+  var batch=db.batch();
+  batch.set(db.collection(COL).doc(negId),negData(P));
+  if(it)batch.set(db.collection(COL).doc(it.id),prodData(it));
+  await limit(batch.commit(),25000);
+}
+async function deleteProds(ids){
+  var batch=db.batch();ids.forEach(function(id){batch.delete(db.collection(COL).doc(id))});
+  await limit(batch.commit(),25000);
 }
 /* ---------- vistas ---------- */
 function setView(r,keep){
@@ -296,25 +272,25 @@ $('logout').onclick=function(){ls('s',K('out'),'1');editing=null;creating=false;
 /* ---------- imágenes ---------- */
 function toData(f){return new Promise(function(res,rej){var r=new FileReader();r.onerror=rej;r.onload=function(){res(r.result)};r.readAsDataURL(f)})}
 async function up(f){if(assets){var r=await assets.upload(f);return r.url||('/_blob/'+r.id)}return toData(f)}
-async function shrink(f,max){
+async function shrink(f,max,q){
   if(f.size>40e6)throw new Error('big');
   var bmp;try{bmp=await createImageBitmap(f,{resizeWidth:max,resizeQuality:'medium',imageOrientation:'from-image'})}catch(e){bmp=await createImageBitmap(f)}
   var s=Math.min(1,max/Math.max(bmp.width,bmp.height)),w=Math.max(1,Math.round(bmp.width*s)),h=Math.max(1,Math.round(bmp.height*s));
   var c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(bmp,0,0,w,h);if(bmp.close)bmp.close();
-  return new Promise(function(res,rej){c.toBlob(function(b){b?res(b):rej(new Error('blob'))},'image/jpeg',.8)});
+  return new Promise(function(res,rej){c.toBlob(function(b){b?res(b):rej(new Error('blob'))},'image/jpeg',q||.8)});
 }
 function pv(box,blobs,round){(box._u||[]).forEach(function(u){URL.revokeObjectURL(u)});box._u=[];box.innerHTML='';blobs.forEach(function(b){var u=URL.createObjectURL(b);box._u.push(u);var im=document.createElement('img');im.src=u;im.alt='';if(round)im.className='logo';box.appendChild(im)})}
 function drawImgs(){var box=$('imgsP');(box._u||[]).forEach(function(u){URL.revokeObjectURL(u)});box._u=[];box.innerHTML='';
   imgF.forEach(function(b,i){var u=URL.createObjectURL(b);box._u.push(u);var w=el('div','th'),im=el('img');im.src=u;im.alt='Imagen '+(i+1);var x=el('button','','×');x.type='button';x.setAttribute('aria-label','Quitar imagen '+(i+1));x.onclick=function(){if(busy)return;imgF.splice(i,1);drawImgs();cnt()};w.appendChild(im);w.appendChild(x);box.appendChild(w)})}
 function cnt(extra){$('imgsN').textContent=imgF.length+' de 6'+(imgF.length<3?' (mínimo 3)':'')+(extra||'')}
 $('logo').onchange=async function(e){var f=e.target.files[0];e.target.value='';if(!f)return;busy=true;$('logoN').textContent='Procesando…';
-  try{logoF=await shrink(f,400);$('logoN').textContent=f.name;pv($('logoP'),[logoF],true)}catch(err){logoF=null;pv($('logoP'),[],true);$('logoN').textContent='No se pudo leer esa imagen. Prueba con otra.'}
+  try{logoF=await shrink(f,300,.8);$('logoN').textContent=f.name;pv($('logoP'),[logoF],true)}catch(err){logoF=null;pv($('logoP'),[],true);$('logoN').textContent='No se pudo leer esa imagen. Prueba con otra.'}
   busy=false};
 $('imgs').onchange=async function(e){if(busy)return;var all=Array.prototype.slice.call(e.target.files);e.target.value='';if(!all.length)return;
   var fs=all.slice(0,6-imgF.length),over=all.length-fs.length,bad=0;
   if(!fs.length){cnt(' · ya tienes el máximo, quita una para añadir otra');return}
   busy=true;
-  for(var i=0;i<fs.length;i++){$('imgsN').textContent='Procesando '+(i+1)+' de '+fs.length+'…';try{imgF.push(await shrink(fs[i],1000));drawImgs()}catch(err){bad++}await wait()}
+  for(var i=0;i<fs.length;i++){$('imgsN').textContent='Procesando '+(i+1)+' de '+fs.length+'…';try{imgF.push(await shrink(fs[i],800,.65));drawImgs()}catch(err){bad++}await wait()}
   cnt((bad?' · '+bad+' no se pudieron leer':'')+(over>0?' · se ignoraron '+over+' por el máximo de 6':''));busy=false};
 function resetForm(){$('form').reset();logoF=null;imgF=[];drawImgs();$('logoP').innerHTML='';$('logoN').textContent='Ningún archivo';cnt();$('msg').textContent=''}
 
@@ -340,14 +316,19 @@ $('form').onsubmit=async function(e){
   var b=$('enviar');b.disabled=true;b.textContent='Publicando…';
   try{
     if(logoF)P.logo=await up(logoF);
-    var imgs=[];for(var i=0;i<imgF.length;i++)imgs.push(await up(imgF[i]));
+    var imgs=[],tries=[[0,0],[640,.55],[500,.5]];
+    if(imgF.length){
+      for(var t=0;t<tries.length;t++){
+        imgs=[];
+        for(var i=0;i<imgF.length;i++){var bl=t?await shrink(imgF[i],tries[t][0],tries[t][1]):imgF[i];imgs.push(await up(bl))}
+        if(JSON.stringify(imgs).length<=900000)break;
+      }
+      if(JSON.stringify(imgs).length>900000)throw new Error('las imágenes pesan demasiado, usa menos imágenes');
+    }
     if(editing&&!imgs.length)imgs=editing.imgs;
-    var oid=docId(),st=docState(oid),wasEdit=!!editing;
-    st.perfiles[negId]=P;
-    st.items.forEach(function(it){if(it.neg===negId)Object.assign(it,P)});
-    var it2=Object.assign({id:editing?editing.id:'p'+Date.now(),neg:negId,createdAt:editing?editing.createdAt:Date.now(),imgs:imgs},v,P);
-    if(editing)st.items=st.items.map(function(x){return x.id===editing.id?it2:x});else st.items.push(it2);
-    await save(oid,st);
+    var wasEdit=!!editing;
+    var it2={id:editing?editing.id:'p'+Date.now(),neg:negId,uid:uid,createdAt:editing?editing.createdAt:Date.now(),imgs:imgs,producto:v.producto,precio:v.precio,emprendimiento:v.emprendimiento};
+    await saveAll(negId,P,it2);
     if(newMode){ls('s',K('neg'),negId);ls('d',K('out'))}
     creating=false;editing=null;resetForm();lastId=it2.id;render();
     if(wasEdit){toast('Cambios guardados');$('okT').textContent='Cambios guardados: ya se ven en el catálogo';$('okb').hidden=false;$('okb').scrollIntoView()}
@@ -364,11 +345,11 @@ function startEdit(it){
   sync();$('form').scrollIntoView();
 }
 async function removeItem(it){
-  try{var st=docState(it.owner);st.items=st.items.filter(function(i){return i.id!==it.id});await save(it.owner,st);toast('Producto eliminado')}
+  try{await deleteProds([it.id]);toast('Producto eliminado')}
   catch(e){toast('No se pudo eliminar. Inténtalo de nuevo.');renderMine()}
 }
 $('delAll').onclick=function(){var d=$('delAll');
-  if(d.dataset.c){delete d.dataset.c;(async function(){try{var oid=docId(),st=docState(oid);st.items=st.items.filter(function(i){return i.neg!==curNeg});await save(oid,st);toast('Catálogo eliminado')}catch(e){toast('No se pudo eliminar.')}})();return}
+  if(d.dataset.c){delete d.dataset.c;(async function(){try{var ids=items.filter(function(i){return i.neg===curNeg}).map(function(i){return i.id});await deleteProds(ids);toast('Catálogo eliminado')}catch(e){toast('No se pudo eliminar.')}})();return}
   d.dataset.c='1';d.textContent='Toca de nuevo para confirmar: se borra todo';
   setTimeout(function(){if(d.dataset.c){delete d.dataset.c;d.textContent='Eliminar todo mi catálogo'}},5000)};
 
@@ -456,23 +437,19 @@ new MutationObserver(function(){if($('msg').textContent)$('msg').scrollIntoView(
 /* ---------- inicio ---------- */
 (async function(){
   setView({emprendedores:'emp',clientes:'cli',ubicaciones:'mapa'}[location.hash.replace('#','')]||'');
-  
-  if(db){
-    // Escuchar Firestore en tiempo real para todos los dispositivos
-    db.collection(COL).onSnapshot(function(s){
-      items=[];profs={};
-      (s.docs||[]).forEach(function(d){var x=typeof d.data==='function'?d.data():d.data;if(!x)return;var pf=x.perfiles||{};
-        Object.keys(pf).forEach(function(k){profs[k]=Object.assign({},pf[k],{owner:d.id})});
-        (x.items||[]).forEach(function(it){it.owner=d.id;items.push(it)})});
-      items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
-    },function(err){
-      console.error("Error en Firestore:", err);
-      $('note').hidden=false;
-    });
-  } else {
+  try{await window.dbReady}catch(e){}
+  // Un solo listener en tiempo real: todos los dispositivos ven lo mismo y se actualiza solo
+  db.collection(COL).onSnapshot(function(snap){
+    NEGS={};PRODS={};
+    snap.forEach(function(d){var x=d.data();if(!x)return;
+      if(x.type==='neg')NEGS[d.id]=x;
+      else if(x.type==='prod')PRODS[d.id]=x});
+    rebuild();$('note').hidden=true;render();
+  },function(err){
+    console.error('Error en Firestore:',err);
+    $('note').textContent='No se pudo conectar con la base de datos ('+(err&&err.code||'error')+'). Revisa tu conexión y las reglas de Firestore.';
     $('note').hidden=false;
-    loadLocal();
-  }
+  });
   render();
 })();
 })();
