@@ -131,7 +131,7 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gpin" x1="0" y1="0" x2="1" y2="1"><stop offset=".45" stop-color="#ea4335"/><stop offset=".45" stop-color="#fbbc04"/><stop offset=".75" stop-color="#fbbc04"/><stop offset=".75" stop-color="#34a853"/></linearGradient></defs></svg>
 <div class="bg" aria-hidden="true"><i class="o"></i><i class="b"></i><i class="o2"></i><i class="b2"></i></div>
 
-<div style="position:fixed;left:10px;bottom:6px;font-size:11px;color:#8a8a95;z-index:3">versión 3</div>
+<div style="position:fixed;left:10px;bottom:6px;font-size:11px;color:#8a8a95;z-index:3">versión 4</div>
 <header class="bar"><div><span class="brand"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:-7px;margin-right:8px"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3d"/><stop offset=".5" stop-color="#ff5a00"/><stop offset="1" stop-color="#1f6bff"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg)"/><path d="M14 20a2 2 0 0 1 2-2H48a2 2 0 0 1 2 2V28a6 6 0 0 1-12 0a6 6 0 0 1-12 0a6 6 0 0 1-12 0Z" fill="#fff"/><path d="M20 34H44a4 4 0 0 1 4 4V46a4 4 0 0 1-4 4H30l-8 6V50H20a4 4 0 0 1-4-4V38a4 4 0 0 1 4-4Z" fill="#fff" fill-opacity=".92"/><circle cx="25" cy="42" r="2.2" fill="#ff5a00"/><circle cx="32" cy="42" r="2.2" fill="#ff5a00"/><circle cx="39" cy="42" r="2.2" fill="#ff5a00"/></svg>Mercadía</span><nav><a href="#" data-role="">Menú</a><a href="#" data-role="cli">Clientes</a><a href="#" data-role="mapa">Ubicaciones</a><a href="#" data-role="emp">Emprendedores</a></nav></div></header>
 
 <section class="hero" id="home">
@@ -234,30 +234,26 @@ async function persist(){
 
 async function loadLocal(){
   try {
-    if(db) {
-      var docRef = await db.collection(COL).doc('main').get();
-      if(docRef.exists) {
-        var data = docRef.data();
-        profs = data.profs || {};
-        items = data.items || [];
-        render();
-        return;
-      }
-    }
     var s = JSON.parse(localStorage.getItem('mercadia_v1')) || null;
     if(s){
       items = s.items || [];
       profs = s.profs || {};
+      render();
     }
-    render();
   } catch(e) {
-    console.error("Error al cargar datos:", e);
+    console.error("Error al cargar local:", e);
   }
 }
 
 async function save(oid, st){
-  if(db) await db.collection(COL).doc(oid).set(st);
   applyLocal(oid, st);
+  if(db) {
+    try {
+      await db.collection(COL).doc(oid).set(st);
+    } catch(e) {
+      console.error("Error al guardar en Firestore:", e);
+    }
+  }
 }
 /* ---------- vistas ---------- */
 function setView(r,keep){
@@ -457,21 +453,25 @@ new MutationObserver(function(){if($('msg').textContent)$('msg').scrollIntoView(
 (async function(){
   setView({emprendedores:'emp',clientes:'cli',ubicaciones:'mapa'}[location.hash.replace('#','')]||'');
   
+  // Cargar datos locales inmediatamente al iniciar para que nunca aparezca en blanco
+  await loadLocal();
+
   if(db){
-    // Escuchar Firestore en tiempo real para todos los dispositivos
+    // Escuchar Firestore en tiempo real para sincronizar automáticamente en todos los dispositivos
     db.collection(COL).onSnapshot(function(s){
       items=[];profs={};
       (s.docs||[]).forEach(function(d){var x=typeof d.data==='function'?d.data():d.data;if(!x)return;var pf=x.perfiles||{};
         Object.keys(pf).forEach(function(k){profs[k]=Object.assign({},pf[k],{owner:d.id})});
         (x.items||[]).forEach(function(it){it.owner=d.id;items.push(it)})});
-      items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
+      items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});
+      persist(); // Actualiza el almacenamiento local con lo último de la nube
+      render();
     },function(err){
       console.error("Error en Firestore:", err);
       $('note').hidden=false;
     });
   } else {
     $('note').hidden=false;
-    loadLocal();
   }
   render();
 })();
