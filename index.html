@@ -131,7 +131,7 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gpin" x1="0" y1="0" x2="1" y2="1"><stop offset=".45" stop-color="#ea4335"/><stop offset=".45" stop-color="#fbbc04"/><stop offset=".75" stop-color="#fbbc04"/><stop offset=".75" stop-color="#34a853"/></linearGradient></defs></svg>
 <div class="bg" aria-hidden="true"><i class="o"></i><i class="b"></i><i class="o2"></i><i class="b2"></i></div>
 
-<div style="position:fixed;left:10px;bottom:6px;font-size:11px;color:#8a8a95;z-index:3">versión 5</div>
+<div style="position:fixed;left:10px;bottom:6px;font-size:11px;color:#8a8a95;z-index:3">versión 3</div>
 <header class="bar"><div><span class="brand"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:-7px;margin-right:8px"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3d"/><stop offset=".5" stop-color="#ff5a00"/><stop offset="1" stop-color="#1f6bff"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg)"/><path d="M14 20a2 2 0 0 1 2-2H48a2 2 0 0 1 2 2V28a6 6 0 0 1-12 0a6 6 0 0 1-12 0a6 6 0 0 1-12 0Z" fill="#fff"/><path d="M20 34H44a4 4 0 0 1 4 4V46a4 4 0 0 1-4 4H30l-8 6V50H20a4 4 0 0 1-4-4V38a4 4 0 0 1 4-4Z" fill="#fff" fill-opacity=".92"/><circle cx="25" cy="42" r="2.2" fill="#ff5a00"/><circle cx="32" cy="42" r="2.2" fill="#ff5a00"/><circle cx="39" cy="42" r="2.2" fill="#ff5a00"/></svg>Mercadía</span><nav><a href="#" data-role="">Menú</a><a href="#" data-role="cli">Clientes</a><a href="#" data-role="mapa">Ubicaciones</a><a href="#" data-role="emp">Emprendedores</a></nav></div></header>
 
 <section class="hero" id="home">
@@ -224,33 +224,40 @@ async function persist(){
   try {
     const data = { profs: profs, items: items };
     localStorage.setItem('mercadia_v1', JSON.stringify(data));
+    if(db){
+      await db.collection(COL).doc('main').set(data);
+    }
   } catch (e) {
-    console.error("Error al guardar local:", e);
+    console.error("Error al guardar:", e);
   }
 }
 
 async function loadLocal(){
   try {
+    if(db) {
+      var docRef = await db.collection(COL).doc('main').get();
+      if(docRef.exists) {
+        var data = docRef.data();
+        profs = data.profs || {};
+        items = data.items || [];
+        render();
+        return;
+      }
+    }
     var s = JSON.parse(localStorage.getItem('mercadia_v1')) || null;
     if(s){
       items = s.items || [];
       profs = s.profs || {};
-      render();
     }
+    render();
   } catch(e) {
-    console.error("Error al cargar local:", e);
+    console.error("Error al cargar datos:", e);
   }
 }
 
 async function save(oid, st){
+  if(db) await db.collection(COL).doc(oid).set(st);
   applyLocal(oid, st);
-  if(db) {
-    try {
-      await db.collection(COL).doc(oid).set(st);
-    } catch(e) {
-      console.error("Error al guardar en Firestore:", e);
-    }
-  }
 }
 /* ---------- vistas ---------- */
 function setView(r,keep){
@@ -357,32 +364,11 @@ function startEdit(it){
   sync();$('form').scrollIntoView();
 }
 async function removeItem(it){
-  try{
-    var st=docState(it.owner);
-    st.items=st.items.filter(function(i){return i.id!==it.id});
-    await save(it.owner,st);
-    toast('Producto eliminado');
-  }catch(e){toast('No se pudo eliminar. Inténtalo de nuevo.');renderMine()}
+  try{var st=docState(it.owner);st.items=st.items.filter(function(i){return i.id!==it.id});await save(it.owner,st);toast('Producto eliminado')}
+  catch(e){toast('No se pudo eliminar. Inténtalo de nuevo.');renderMine()}
 }
-
-// Borrar todo el catálogo y limpiar Firestore por completo para ese owner
 $('delAll').onclick=function(){var d=$('delAll');
-  if(d.dataset.c){
-    delete d.dataset.c;
-    (async function(){
-      try{
-        var oid=docId();
-        items=items.filter(function(i){return i.owner!==oid});
-        Object.keys(profs).forEach(function(k){if(profs[k].owner===oid)delete profs[k]);
-        if(db){ await db.collection(COL).doc(oid).delete(); }
-        persist();
-        ls('s',K('out'),'1');
-        creating=false;editing=null;resetForm();render();
-        toast('Catálogo eliminado por completo');
-      }catch(e){toast('No se pudo eliminar de la nube.')}
-    })();
-    return;
-  }
+  if(d.dataset.c){delete d.dataset.c;(async function(){try{var oid=docId(),st=docState(oid);st.items=st.items.filter(function(i){return i.neg!==curNeg});await save(oid,st);toast('Catálogo eliminado')}catch(e){toast('No se pudo eliminar.')}})();return}
   d.dataset.c='1';d.textContent='Toca de nuevo para confirmar: se borra todo';
   setTimeout(function(){if(d.dataset.c){delete d.dataset.c;d.textContent='Eliminar todo mi catálogo'}},5000)};
 
@@ -430,23 +416,12 @@ function openDetail(it){
   row.appendChild(a);row.appendChild(x);ord.appendChild(row);info.appendChild(ord);d.appendChild(info);if(!d.open)d.showModal();
 }
 
-/* ---------- listados (Con filtro de duplicados optimizado) ---------- */
+/* ---------- listados ---------- */
 function renderCatalog(){
   var g=$('grid'),q=query.trim().toLowerCase();g.innerHTML='';
-  
-  // Evitar elementos duplicados en la vista filtrando por ID de producto único
-  var uniqueMap = {};
-  var cleanList = [];
-  items.forEach(function(i){
-    if(!uniqueMap[i.id]){
-      uniqueMap[i.id] = true;
-      cleanList.push(i);
-    }
-  });
-
-  var list=cleanList.filter(function(i){return !q||[i.empresa,i.producto,i.emprendimiento,i.ubi].join(' ').toLowerCase().indexOf(q)>-1});
-  $('empty').hidden=cleanList.length>0;$('nores').hidden=!(cleanList.length&&!list.length);
-  $('count').textContent=cleanList.length?list.length+(list.length===1?' producto':' productos'):'';
+  var list=items.filter(function(i){return !q||[i.empresa,i.producto,i.emprendimiento,i.ubi].join(' ').toLowerCase().indexOf(q)>-1});
+  $('empty').hidden=items.length>0;$('nores').hidden=!(items.length&&!list.length);
+  $('count').textContent=items.length?list.length+(list.length===1?' producto':' productos'):'';
   list.forEach(function(it){var cd=card(it,false);cd.setAttribute('data-id',it.id);if(it.id===lastId)cd.style.outline='2px solid #ff9a4d';g.appendChild(cd)});
 }
 function renderMine(){
@@ -482,25 +457,21 @@ new MutationObserver(function(){if($('msg').textContent)$('msg').scrollIntoView(
 (async function(){
   setView({emprendedores:'emp',clientes:'cli',ubicaciones:'mapa'}[location.hash.replace('#','')]||'');
   
-  // Cargar datos locales de inmediato
-  await loadLocal();
-
   if(db){
-    // Escuchar Firestore en tiempo real filtrando y unificando registros
+    // Escuchar Firestore en tiempo real para todos los dispositivos
     db.collection(COL).onSnapshot(function(s){
       items=[];profs={};
       (s.docs||[]).forEach(function(d){var x=typeof d.data==='function'?d.data():d.data;if(!x)return;var pf=x.perfiles||{};
         Object.keys(pf).forEach(function(k){profs[k]=Object.assign({},pf[k],{owner:d.id})});
         (x.items||[]).forEach(function(it){it.owner=d.id;items.push(it)})});
-      items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});
-      persist();
-      render();
+      items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
     },function(err){
       console.error("Error en Firestore:", err);
       $('note').hidden=false;
     });
   } else {
     $('note').hidden=false;
+    loadLocal();
   }
   render();
 })();
