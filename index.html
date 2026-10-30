@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Firebase App (Core) y Firestore -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+  // Tus credenciales de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCN59nyF1Q-Zbx86CUBu2ZUn0MevsDbTNM",
+    authDomain: "mercadia-9f590.firebaseapp.com",
+    projectId: "mercadia-9f590",
+    storageBucket: "mercadia-9f590.appspot.com",
+    messagingSenderId: "134360627246",
+    appId: "1:134360627246:web:98e81f8e0268af396a07bf",
+    measurementId: "G-1X5FVM72TF"
+  };
+
+  // Inicializar Firebase y conectar la variable 'db' que usa tu código
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mercadía · Tu emprendimiento, a un mensaje de distancia</title>
