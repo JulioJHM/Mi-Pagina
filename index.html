@@ -111,7 +111,8 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gpin" x1="0" y1="0" x2="1" y2="1"><stop offset=".45" stop-color="#ea4335"/><stop offset=".45" stop-color="#fbbc04"/><stop offset=".75" stop-color="#fbbc04"/><stop offset=".75" stop-color="#34a853"/></linearGradient></defs></svg>
 <div class="bg" aria-hidden="true"><i class="o"></i><i class="b"></i><i class="o2"></i><i class="b2"></i></div>
 
-<header class="bar"><div><span class="brand"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:-7px;margin-right:8px"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3d"/><stop offset=".5" stop-color="#ff5a00"/><stop offset="1" stop-color="#1f6bff"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg)"/><path d="M14 20a2 2 0 0 1 2-2H48a2 2 0 0 1 2 2V28a6 6 0 0 1-12 0a6 6 0 0 1-12 0a6 6 0 0 1-12 0Z" fill="#fff"/><path d="M20 34H44a4 4 0 0 1 4 4V46a4 4 0 0 1-4 4H30l-8 6V50H20a4 4 0 0 1-4-4V38a4 4 0 0 1 4-4Z" fill="#fff" fill-opacity=".92"/><circle cx="25" cy="42" r="2.2" fill="#ff5a00"/><circle cx="32" cy="42" r="2.2" fill="#ff5a00"/><circle cx="39" cy="42" r="2.2" fill="#ff5a00"/></svg>Mercadía</span><nav><a href="#" data-role="">Inicio</a><a href="#" data-role="cli">Clientes</a><a href="#" data-role="mapa">Ubicaciones</a><a href="#" data-role="emp">Emprendedores</a></nav></div></header>
+<div style="position:fixed;left:10px;bottom:6px;font-size:11px;color:#8a8a95;z-index:3">versión 3</div>
+<header class="bar"><div><span class="brand"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:-7px;margin-right:8px"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3d"/><stop offset=".5" stop-color="#ff5a00"/><stop offset="1" stop-color="#1f6bff"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg)"/><path d="M14 20a2 2 0 0 1 2-2H48a2 2 0 0 1 2 2V28a6 6 0 0 1-12 0a6 6 0 0 1-12 0a6 6 0 0 1-12 0Z" fill="#fff"/><path d="M20 34H44a4 4 0 0 1 4 4V46a4 4 0 0 1-4 4H30l-8 6V50H20a4 4 0 0 1-4-4V38a4 4 0 0 1 4-4Z" fill="#fff" fill-opacity=".92"/><circle cx="25" cy="42" r="2.2" fill="#ff5a00"/><circle cx="32" cy="42" r="2.2" fill="#ff5a00"/><circle cx="39" cy="42" r="2.2" fill="#ff5a00"/></svg>Mercadía</span><nav><a href="#" data-role="">Menú</a><a href="#" data-role="cli">Clientes</a><a href="#" data-role="mapa">Ubicaciones</a><a href="#" data-role="emp">Emprendedores</a></nav></div></header>
 
 <section class="hero" id="home">
   <div class="kicker">Mercadía</div>
@@ -124,7 +125,9 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 </section>
 
 <section class="band" id="emp" hidden><div class="wrap">
-  <div class="head"><h2 id="regT">Perfil de emprendedor</h2><span class="acts"><button class="link" type="button" id="logout" hidden>Cerrar sesión</button><button class="link" type="button" data-role="" id="backHome">Volver al inicio</button></span></div>
+  <div class="head"><h2 id="regT">Perfil de emprendedor</h2><span class="acts"><button class="link" type="button" id="logout" hidden>Cerrar sesión</button><button class="link" type="button" data-role="cli">Ver catálogo de clientes</button><button class="link" type="button" data-role="" id="backHome">Volver al menú</button></span></div>
+
+  <div class="card" id="okb" hidden style="max-width:720px;margin:0 auto 32px;text-align:center"><h3 id="okT" style="font-size:28px;line-height:1.14;margin-bottom:8px">Tu producto ya está en el catálogo</h3><p class="hint" style="margin:0 0 20px">Los clientes lo ven en este momento. Cualquier cambio que hagas aparece en vivo.</p><div class="row" style="justify-content:center;margin:0"><button class="pill glass green" type="button" id="seeP">Ver mi producto en el catálogo</button><button class="pill glass blue" type="button" data-role="">Volver al menú</button></div></div>
 
   <div class="card" id="gate" hidden><h3 id="gT"></h3><p class="hint" id="gP"></p><div id="gL"></div></div>
 
@@ -165,19 +168,19 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 </div></section>
 
 <section class="band" id="catalogo" hidden><div class="wrap">
-  <div class="head"><h2>Catálogo</h2><span class="hint" id="count"></span><button class="pill glass blue" type="button" data-role="mapa">Ver dónde están</button><button class="link" type="button" data-role="">Volver al inicio</button></div>
+  <div class="head"><h2>Catálogo</h2><span class="hint" id="count"></span><button class="pill glass blue" type="button" data-role="mapa">Ver dónde están</button><button class="link" type="button" data-role="">Volver al menú</button></div>
   <input type="text" class="search" id="q" placeholder="Buscar por producto, empresa o lugar" aria-label="Buscar en el catálogo">
   <div class="grid" id="grid"></div>
   <div class="card empty" id="empty" hidden><h3>Aún no hay emprendimientos.</h3><p>Vuelve pronto: los emprendedores están publicando sus productos.</p></div>
   <div class="card empty" id="nores" hidden><h3>Sin resultados.</h3><p>Prueba con otra palabra.</p></div>
-  <p class="note" id="note" hidden>Vista previa: los registros solo se ven en esta pantalla. Al abrir la página publicada se comparten con todos.</p>
+  <p class="note" id="note" hidden>Modo local: los datos se guardan en este navegador y se sincronizan entre pestañas. Para compartirlos entre dispositivos, usa la página publicada con base de datos.</p>
 </div></section>
 
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
 function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
-var db=null,assets=null,items=[],profs={},uid=null,creating=false,editing=null,logoF=null,imgF=[],busy=false,locked=false,curNeg=null,role='',query='';
+var db=null,assets=null,items=[],profs={},uid=null,creating=false,editing=null,logoF=null,imgF=[],busy=false,locked=false,curNeg=null,role='',query='',lastId=null;
 var COL='emprendimientos',WA='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C7 3 3 6.6 3 11c0 1.9.8 3.6 2 5l-1 4 4.2-1.2c1.2.5 2.5.7 3.8.7 5 0 9-3.6 9-8s-4-8-9-8z" fill="currentColor"/></svg>';
 var PIN='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z" fill="url(#gpin)"/><circle cx="12" cy="9" r="2.8" fill="#fff"/></svg>';
 function ls(a,k,v){try{if(a==='g')return localStorage.getItem(k);if(a==='s')localStorage.setItem(k,v);else localStorage.removeItem(k)}catch(e){}return null}
@@ -195,25 +198,27 @@ function applyLocal(oid,st){
   items=items.filter(function(i){return i.owner!==oid}).concat(st.items.map(function(i){return Object.assign({},i,{owner:oid})}));
   Object.keys(profs).forEach(function(k){if(profs[k].owner===oid)delete profs[k]});
   Object.keys(st.perfiles).forEach(function(k){profs[k]=Object.assign({},st.perfiles[k],{owner:oid})});
-  items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
+  items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});persist();render();
 }
+function persist(){if(db)return;try{localStorage.setItem('mercadia_v1',JSON.stringify({profs:profs,items:items}))}catch(e){toast('El almacenamiento del navegador está lleno. Elimina productos o usa menos imágenes.')}}
+function loadLocal(){try{var s=JSON.parse(localStorage.getItem('mercadia_v1')||'null');if(s){items=s.items||[];profs=s.profs||{}}}catch(e){}}
 async function save(oid,st){if(db)await db.collection(COL).doc(oid).set(st);applyLocal(oid,st)}
 
 /* ---------- vistas ---------- */
 function setView(r,keep){
-  if(locked)r='emp';role=r;
+  role=r;if(r!=='emp')$('okb').hidden=true;
   $('home').hidden=r!=='';$('emp').hidden=r!=='emp';$('catalogo').hidden=r!=='cli';$('mapa').hidden=r!=='mapa';
   document.querySelectorAll('.bar a').forEach(function(a){var t=a.getAttribute('data-role'),s=false;
-    if(locked)s=t==='emp';else if(r==='emp')s=t===''||t==='emp';else if(r==='cli'||r==='mapa')s=t===''||t==='cli'||t==='mapa';
-    if(t==='emp')a.textContent=locked?'Mi perfil':'Emprendedores';
+    s=r!=='';
+    if(t==='emp')a.textContent=curNeg?'Mi perfil':'Emprendedores';
     a.hidden=!s;if(s&&t===r&&r!=='')a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
-  $('backHome').hidden=locked;
+  $('backHome').hidden=false;
   if(!keep)window.scrollTo(0,0);
 }
 document.querySelectorAll('[data-role]').forEach(function(e){e.addEventListener('click',function(ev){ev.preventDefault();setView(e.getAttribute('data-role'))})});
 
 function sync(){
-  resolve();var ns=negs(),was=locked;locked=!!curNeg;
+  resolve();var ns=negs();
   var newMode=!!uid&&(creating||!ns.length),chooser=!!uid&&!curNeg&&!newMode;
   $('gate').hidden=!(!uid||chooser);$('dash').hidden=!curNeg;$('form').hidden=!(newMode||!!curNeg);$('logout').hidden=!curNeg;
   $('fPerfil').hidden=!(newMode||!!editing);$('formH').hidden=!(newMode&&!ns.length);
@@ -228,8 +233,8 @@ function sync(){
     ns.forEach(function(k){var b=el('button','pill glass orange','Entrar a '+profs[k].empresa);b.type='button';b.onclick=function(){ls('s',K('neg'),k);ls('d',K('out'));sync()};gl.appendChild(b)});
     var nb=el('button','pill glass blue','Crear nuevo emprendimiento');nb.type='button';nb.onclick=function(){creating=true;resetForm();sync()};gl.appendChild(nb);
   }
-  if(locked&&role!=='emp')setView('emp');else setView(role,true);
-  if(locked&&!was&&role==='emp')window.scrollTo(0,0);
+  setView(role,true);
+
 }
 $('logout').onclick=function(){ls('s',K('out'),'1');editing=null;creating=false;resetForm();sync()};
 
@@ -260,8 +265,8 @@ function resetForm(){$('form').reset();logoF=null;imgF=[];drawImgs();$('logoP').
 
 /* ---------- publicar / editar / borrar ---------- */
 $('form').onsubmit=async function(e){
-  e.preventDefault();var m=$('msg');m.textContent='';
-  if(busy)return m.textContent='Espera a que terminen de procesarse las imágenes.';
+  e.preventDefault();var m=$('msg');m.textContent='';toast('Revisando tu formulario…');
+  while(busy)await wait();
   if(!uid)return m.textContent='Necesitas iniciar sesión en Claude para publicar.';
   var ns=negs(),newMode=creating||!ns.length,showP=newMode||!!editing,negId=newMode?'n'+Date.now():(editing?editing.neg:curNeg),old=profs[negId]||null,P;
   if(showP){
@@ -289,14 +294,15 @@ $('form').onsubmit=async function(e){
     if(editing)st.items=st.items.map(function(x){return x.id===editing.id?it2:x});else st.items.push(it2);
     await save(oid,st);
     if(newMode){ls('s',K('neg'),negId);ls('d',K('out'))}
-    creating=false;editing=null;resetForm();sync();toast(wasEdit?'Cambios guardados':'Publicado en el catálogo');
-    if(!$('dash').hidden)$('dash').scrollIntoView();
-  }catch(err){m.textContent='No se pudo publicar. Revisa tu conexión e inténtalo de nuevo.'}
+    creating=false;editing=null;resetForm();lastId=it2.id;render();
+    if(wasEdit){toast('Cambios guardados');$('okT').textContent='Cambios guardados: ya se ven en el catálogo';$('okb').hidden=false;$('okb').scrollIntoView()}
+    else{query='';$('q').value='';setView('cli');toast('¡Publicado! Así lo ven los clientes');var hl=document.querySelector('#grid [data-id="'+it2.id+'"]');if(hl)hl.scrollIntoView({block:'center'})}
+  }catch(err){m.textContent='No se pudo publicar: '+((err&&err.message)||'revisa tu conexión')+'. Inténtalo de nuevo.';toast('No se pudo publicar')}
   b.disabled=false;sync();
 };
 $('cancelEdit').onclick=function(){editing=null;creating=false;resetForm();sync()};
 function startEdit(it){
-  editing=it;creating=false;resetForm();
+  editing=it;creating=false;resetForm();$('okb').hidden=true;
   $('nombre').value=it.nombre||'';$('empresa').value=it.empresa||'';$('wa').value=it.wa||'';$('ubi').value=it.ubi||'';
   $('producto').value=it.producto||'';$('precio').value=it.precio||'';$('emp2').value=it.emprendimiento||'';
   $('logoN').textContent='Se mantiene tu logo actual';$('imgsN').textContent='Se mantienen las imágenes actuales. Añade nuevas (mínimo 3) para reemplazarlas.';
@@ -334,7 +340,7 @@ function card(it,mine){
 }
 function openDetail(it){
   var d=$('dlg');if(!d){d=el('dialog');d.id='dlg';document.body.appendChild(d);d.addEventListener('click',function(e){if(e.target===d)d.close()})}
-  d.innerHTML='';var imgs=it.imgs||[],main=el('img','main');main.src=imgs[0]||'';main.alt=it.producto||it.empresa;d.appendChild(main);
+  d._id=it.id;d._sig=JSON.stringify(it);d.innerHTML='';var imgs=it.imgs||[],main=el('img','main');main.src=imgs[0]||'';main.alt=it.producto||it.empresa;d.appendChild(main);
   if(it.precio)d.appendChild(el('span','price',it.precio));
   d.appendChild(gallery(imgs,main));
   var info=el('div','info'),who=el('div','who'),lg=el('img');lg.src=it.logo||'';lg.alt='';who.appendChild(lg);who.appendChild(el('h3',null,it.empresa));info.appendChild(who);
@@ -344,15 +350,15 @@ function openDetail(it){
   mn.onclick=function(){if(qty>1){qty--;qv.textContent=qty}};pl.onclick=function(){if(qty<99){qty++;qv.textContent=qty}};
   qr.appendChild(el('span',null,'Cantidad'));qr.appendChild(mn);qr.appendChild(qv);qr.appendChild(pl);ord.appendChild(qr);
   var nm=el('input');nm.type='text';nm.placeholder='Tu nombre';nm.maxLength=60;nm.setAttribute('aria-label','Tu nombre');ord.appendChild(nm);
-  var nt=el('textarea');nt.placeholder='Nota o dirección de entrega (opcional)';nt.maxLength=200;nt.setAttribute('aria-label','Nota para el emprendedor');ord.appendChild(nt);
+  var nt=el('textarea');nt.placeholder='Detalles';nt.maxLength=200;nt.setAttribute('aria-label','Detalles');ord.appendChild(nt);
   var row=el('div','row');row.style.marginTop='4px';
   var a=el('a','pill glass green');a.innerHTML=WA+'<span>Pedir por WhatsApp</span>';a.target='_blank';a.rel='noopener noreferrer';
   function build(){var t='Hola '+it.nombre+', vi tu producto en Mercadía y quiero hacer un pedido:\n• '+qty+' × '+it.producto+(it.precio?' ('+it.precio+' c/u)':'')+' · '+it.empresa;
-    if(nm.value.trim())t+='\nMi nombre: '+nm.value.trim();if(nt.value.trim())t+='\nNota: '+nt.value.trim();t+='\n¿Cómo coordinamos el pago y la entrega?';
+    if(nm.value.trim())t+='\nMi nombre: '+nm.value.trim();if(nt.value.trim())t+='\nDetalles: '+nt.value.trim();t+='\n¿Cómo coordinamos el pago y la entrega?';
     return 'https://wa.me/'+encodeURIComponent(it.wa)+'?text='+encodeURIComponent(t)}
   a.href=build();a.addEventListener('click',function(){a.href=build();toast('Abriendo WhatsApp con tu pedido…')});
   var x=el('button','pill line','Cerrar');x.type='button';x.onclick=function(){d.close()};
-  row.appendChild(a);row.appendChild(x);ord.appendChild(row);info.appendChild(ord);d.appendChild(info);d.showModal();
+  row.appendChild(a);row.appendChild(x);ord.appendChild(row);info.appendChild(ord);d.appendChild(info);if(!d.open)d.showModal();
 }
 
 /* ---------- listados ---------- */
@@ -361,7 +367,7 @@ function renderCatalog(){
   var list=items.filter(function(i){return !q||[i.empresa,i.producto,i.emprendimiento,i.ubi].join(' ').toLowerCase().indexOf(q)>-1});
   $('empty').hidden=items.length>0;$('nores').hidden=!(items.length&&!list.length);
   $('count').textContent=items.length?list.length+(list.length===1?' producto':' productos'):'';
-  list.forEach(function(it){g.appendChild(card(it,false))});
+  list.forEach(function(it){var cd=card(it,false);cd.setAttribute('data-id',it.id);if(it.id===lastId)cd.style.outline='2px solid #ff9a4d';g.appendChild(cd)});
 }
 function renderMine(){
   var g=$('mine');g.innerHTML='';if(!curNeg)return;
@@ -384,8 +390,13 @@ function renderPlaces(){
     c.appendChild(row);g.appendChild(c)});
   p.appendChild(g);
 }
-function render(){renderCatalog();renderMine();renderPlaces();sync()}
+function refreshDetail(){var d=$('dlg');if(!d||!d.open||!d._id)return;var cur=items.filter(function(i){return i.id===d._id})[0];if(!cur){d.close();toast('Este producto ya no está disponible');return}if(JSON.stringify(cur)!==d._sig)openDetail(cur)}
+function render(){renderCatalog();renderMine();renderPlaces();sync();refreshDetail()}
 $('q').oninput=function(e){query=e.target.value;renderCatalog()};
+$('seeP').onclick=function(){query='';$('q').value='';setView('cli')};
+window.addEventListener('error',function(e){toast('Error: '+(e.message||'desconocido'))});
+window.addEventListener('unhandledrejection',function(e){toast('Error: '+((e.reason&&e.reason.message)||e.reason||'desconocido'))});
+new MutationObserver(function(){if($('msg').textContent)$('msg').scrollIntoView({block:'center',behavior:'smooth'})}).observe($('msg'),{childList:true,characterData:true,subtree:true});
 
 /* ---------- inicio ---------- */
 (async function(){
@@ -400,7 +411,7 @@ $('q').oninput=function(e){query=e.target.value;renderCatalog()};
         (x.items||[]).forEach(function(it){it.owner=d.id;items.push(it)})});
       items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});render();
     },function(){$('note').hidden=false});
-  }else $('note').hidden=false;
+  }else{$('note').hidden=false;loadLocal();window.addEventListener('storage',function(e){if(e.key==='mercadia_v1'){loadLocal();render()}})}
   render();
 })();
 })();
