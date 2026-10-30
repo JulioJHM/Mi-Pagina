@@ -220,7 +220,17 @@ function applyLocal(oid,st){
   Object.keys(st.perfiles).forEach(function(k){profs[k]=Object.assign({},st.perfiles[k],{owner:oid})});
   items.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0)});persist();render();
 }
-function persist(){if(db)return;try{localStorage.setItem('mercadia_v1',JSON.stringify({profs:profs,items:items}))}catch(e){toast('El almacenamiento del navegador está lleno. Elimina productos o usa menos imágenes.')}}
+async function persist(){
+  try {
+    const data = { profs: profs, items: items };
+    localStorage.setItem('mercadia_v1', JSON.stringify(data));
+    if(db){
+      await db.collection(COL).doc('main').set(data);
+    }
+  } catch (e) {
+    console.error("Error al guardar:", e);
+  }
+}
 function loadLocal(){try{var s=JSON.parse(localStorage.getItem('mercadia_v1')||'null');if(s){items=s.items||[];profs=s.profs||{}}}catch(e){}}
 async function save(oid,st){if(db)await db.collection(COL).doc(oid).set(st);applyLocal(oid,st)}
 
